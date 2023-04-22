@@ -25,8 +25,8 @@
     <ClInclude Include="csv.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="List.h" />
-    <ClInclude Include="PhoneApp.h" />
-    <ClInclude Include="PhoneApp2.h" />
+    <ClInclude Include="legacy1.h" />
+    <ClInclude Include="legacy2.h" />
     <ClInclude Include="PhoneApp3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

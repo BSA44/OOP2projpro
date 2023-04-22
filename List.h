@@ -1,10 +1,11 @@
 #pragma once
+#include<fstream>
 #include<vector>
 #include<string>
 #include<iostream>
 #include"csv.h"
 #include"file.h"
-#include"PhoneApp.h"
+//#include"PhoneApp.h"
 
 
 using namespace std;
@@ -21,42 +22,34 @@ string toLower(string str)
 	}
 	return str;
 }
-vector<int> string_to_vector(const string& str, char delimiter) { 
-	vector<int> result;
-	stringstream ss(str);
-	string token;
-	while (getline(ss, token, delimiter)) {
-		result.push_back(stoi(token));
-	}
-	return result;
-}
+//vector<int> string_to_vector(const string& str, char delimiter) { 
+//	vector<int> result;
+//	stringstream ss(str);
+//	string token;
+//	while (getline(ss, token, delimiter)) {
+//		result.push_back(stoi(token));
+//	}
+//	return result;
+//}
 class ListOfStudents
 {
 private:
-	vector<int> listOfIDs;
+	vector<Contact> listOf—ontacts;
 public:
-	ListOfStudents()
-	{
-		listOfIDs={ 0 };
-	}
+	ListOfStudents() {};
 	void init() //initialize list from file
 	{
-		string IDs = readFile("./core/list.csv", rstat);
-		if (rstat != ReadStatus::SUCCESS)
+		fstream initf("list.dat", ios::in | ios::out | ios::app);
+		initf.seekp(0, ios::end);
+		int size = initf.tellp();
+		if (size != 0)
 		{
-			cout << "Error while reading" << endl;
-
-		}
-		else
-		{
-			listOfIDs = string_to_vector(IDs, ',');
+			initf.read((char*)&listOf—ontacts, sizeof(listOf—ontacts)); //size using tellg()
 		}
 	}
 	void addContact(Contact& cntc)
 	{
-		Contact sample;
-		int lenOfIDs = listOfIDs.size();
-		listOfIDs.push_back(cntc.getID());
+		
 		
 	}
 };

@@ -1,10 +1,11 @@
 #include<vector>
 #include<string>
 #include<iostream>
+#include<fstream>
 #include"csv.h"
 #include"file.h"
 #include"PhoneApp3.h"
-//#include"Header.h"
+#include"List.h"
 #include <sstream>
 
 using namespace std;
@@ -47,9 +48,15 @@ vector<string> kek = { "Abbos" };
 void add(string added)
 {
 	kek.push_back(added);
-	for (auto i = kek.rbegin(); i > kek.rend(); i++)
+	int i = kek.size()-1;
+	while(i>0)
 	{
 
+		if (toLower(kek[i]) < toLower(kek[i-1]))
+		{
+			swap(kek[i], kek[i - 1]);
+		}
+		i--;
 	}
 }
 
@@ -82,6 +89,28 @@ int main()
 		
 	// , "Sarvar Bazarov", "ALen 007", "Amirchik", "Mama"};
 	
-
+	/*add("Sarvar Bazarov");
+	add("ALen 007");
+	add("Amirchik");
+	add("mama");
+	add("AAron");
+	for (auto& i : kek)
+	{
+		cout << i << endl;
+	}*/
+	fstream initff("init.dat",ios::out|ios::app);
+	string ll = "adagr\n";
+	initff.seekg(0, ios::end);
+	cout << initff.tellg() << endl;
+//	initff.clear();
+	initff.write((char*)&ll, sizeof(ll));
+	initff.write((char*)&ll, sizeof(ll));
+	initff.write((char*)&ll, sizeof(ll));
+	initff.write((char*)&ll, sizeof(ll));
+	initff.close();
+	initff.open("init.dat", ios::in | ios::out);
+	initff.seekg(0, ios::end);
+	ll = "works 2";
+	initff.write((char*)&ll, sizeof(ll));
 	return 0;
 }
