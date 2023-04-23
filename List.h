@@ -42,12 +42,9 @@ public:
 		fstream initf("list.dat", ios::in | ios::out | ios::app);
 		initf.seekp(0, ios::end);
 		int size = initf.tellp();
-		if (size != 0)
-		{
-			initf.read((char*)&listOf—ontacts, sizeof(listOf—ontacts)); //size using tellg()
-		}
+		initf.read((char*)&listOf—ontacts, size);
 	}
-	void addContact(Contact& cntc)
+	void addContact(Contact cntc)
 	{
 		
 		
