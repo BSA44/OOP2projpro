@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="csv.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="legacy1.h" />
     <ClInclude Include="legacy2.h" />
