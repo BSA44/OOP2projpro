@@ -22,9 +22,6 @@ public:
     }
     void setDay(int d) {
 
-        // Fix: correct validation of day
-        // Remove: low level cout
-
         if (d >= 1 || d <= 28)
         {
             day = d;
@@ -123,43 +120,43 @@ public:
     string getNumber() const {
         return this->number;
     }
-    friend void operator <<(ostream& cout, PhoneNumber p);
+    //friend void operator <<(ostream& cout, PhoneNumber p);
     void* operator new(size_t size) {
         void* p = (void*)malloc(size);
         return p;
     }
 };
 
-void operator <<(ostream& cout, PhoneNumber p) //for beautiful and formatted output
-{
-    int i = 0;
-    cout << "+(";
-    for (; i < 3; i++)
-    {
-        cout << p.number[i];
-    }
-    cout << ") ";
-    for (; i < 5; i++)
-    {
-        cout << p.number[i];
-    }
-    cout << "-";
-    for (; i < 8; i++)
-    {
-        cout << p.number[i];
-    }
-    cout << "-";
-    for (; i < 10; i++)
-    {
-        cout << p.number[i];
-    }
-    cout << "-";
-    for (; i < 12; i++)
-    {
-        cout << p.number[i];
-    }
-    cout << endl;
-}
+//void operator <<(ostream& cout, PhoneNumber p) //for beautiful and formatted output
+//{
+//    int i = 0;
+//    cout << "+(";
+//    for (; i < 3; i++)
+//    {
+//        cout << p.number[i];
+//    }
+//    cout << ") ";
+//    for (; i < 5; i++)
+//    {
+//        cout << p.number[i];
+//    }
+//    cout << "-";
+//    for (; i < 8; i++)
+//    {
+//        cout << p.number[i];
+//    }
+//    cout << "-";
+//    for (; i < 10; i++)
+//    {
+//        cout << p.number[i];
+//    }
+//    cout << "-";
+//    for (; i < 12; i++)
+//    {
+//        cout << p.number[i];
+//    }
+//    cout << endl;
+//}
 
 class Email {
 private:

@@ -31,18 +31,15 @@ string toLower(string str)
 //	}
 //	return result;
 //}
-class ListOfStudents
+class ContactsList
 {
 private:
 	vector<Contact> listOf—ontacts;
 public:
-	ListOfStudents() {};
+	ContactsList() {};
 	void init() //initialize list from file
 	{
-		fstream initf("list.dat", ios::in | ios::out | ios::app);
-		initf.seekp(0, ios::end);
-		int size = initf.tellp();
-		initf.read((char*)&listOf—ontacts, size);
+		
 	}
 	void addContact(Contact cntc)
 	{

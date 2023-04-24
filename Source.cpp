@@ -43,7 +43,7 @@ using namespace files;
 //	return result;
 //}
 
-vector<string> kek = { "Abbos" };
+vector<string> kek; 
 
 void add(string added)
 {
@@ -63,12 +63,15 @@ void add(string added)
 int Contact::counter = 0;
 int main()
 {
+	vector<string> maxik;// = { 1,23,4,45,5 };
+	maxik.reserve(5);
 	//PhoneNumber tt;
 	//string lolll;
 	//vector<PhoneNumber> listOfNumbers;
 	//for (int i = 0; i < 3; i++)
 	//{
 	//	cin >> lolll;
+	// 
 	//	tt.setNumber(lolll);
 	//	listOfNumbers.push_back(tt);
 	//}
@@ -88,29 +91,50 @@ int main()
 	}*/
 		
 	// , "Sarvar Bazarov", "ALen 007", "Amirchik", "Mama"};
-	
-	/*add("Sarvar Bazarov");
-	add("ALen 007");
-	add("Amirchik");
-	add("mama");
-	add("AAron");
-	for (auto& i : kek)
-	{
-		cout << i << endl;
-	}*/
-	fstream initff("init.dat",ios::out|ios::app);
-	string ll = "adagr\n";
+	//
+	maxik.push_back("Sarvar Bazarov");
+	maxik.push_back("ALen 007");
+	maxik.push_back("Amirchik");
+	maxik.push_back("mama");
+	maxik.push_back("AAron");
+	//for (auto& i : kek)
+	//{
+	//	cout << i << endl;
+	//}
+	fstream initff("init.dat",ios::in|ios::out| ios::binary|ios::trunc);
+	fstream sizee("size.dat", ios::out| ios::binary | ios::trunc);
+	initff.write((char*)&maxik, sizeof(maxik));
+	//cout << to_string(sizeof(kek)) << endl;
+	int size = sizeof(maxik);
+	sizee.write((char*)&size, sizeof(int));
 	initff.seekg(0, ios::end);
 	cout << initff.tellg() << endl;
-//	initff.clear();
-	initff.write((char*)&ll, sizeof(ll));
-	initff.write((char*)&ll, sizeof(ll));
-	initff.write((char*)&ll, sizeof(ll));
+	initff.close();
+	sizee.close();
+
+	size = 1000000;
+
+	sizee.open("size.dat", ios::in | ios::binary);
+	initff.open("init.dat", ios::in | ios::binary);
+	/*string size;
+	getline(sizee, size);
+	cout << size << endl;*/
+
+	//maxik.clear();
+
+	sizee.read((char*)&size, sizeof(int));
+	cout << size << endl;
+	initff.read((char*)&maxik,size);
+	cout << maxik[0] << endl;
+	initff.close();
+	sizee.close();
+	
+	/*initff.write((char*)&ll, sizeof(ll));
 	initff.write((char*)&ll, sizeof(ll));
 	initff.close();
 	initff.open("init.dat", ios::in | ios::out);
 	initff.seekg(0, ios::end);
 	ll = "works 2";
-	initff.write((char*)&ll, sizeof(ll));
+	initff.write((char*)&ll, sizeof(ll));*/
 	return 0;
 }
