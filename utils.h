@@ -22,13 +22,3 @@ string mask(string plaintext, string passwd)
 	}
 	return ciphertext;
 }
-
-int signIn()
-{
-
-}
-
-int login()
-{
-
-}
