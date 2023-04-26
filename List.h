@@ -43,7 +43,24 @@ public:
 	}
 	void addContact(Contact cntc)
 	{
+		listOf—ontacts.push_back(cntc);
+		int i = listOf—ontacts.size() - 1;
+		while (i > 0)
+		{
+
+			if (toLower(listOf—ontacts[i].getDisplayName()) < toLower(listOf—ontacts[i - 1].getDisplayName()))
+			{
+				swap(listOf—ontacts[i], listOf—ontacts[i - 1]);
+			}
+			i--;
+		}
 		
-		
+	}
+	void display() //for debug
+	{
+		for (int i = 0; i < listOf—ontacts.size(); i++)
+		{
+			cout << listOf—ontacts[i].getDisplayName() << endl;
+		}
 	}
 };

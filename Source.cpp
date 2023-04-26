@@ -122,12 +122,12 @@ void add(string added, vector<string> strArr)
 int Contact::counter = 0;
 int main()
 {
-	if (PasswordSet() == 1)
-	{
-		signIn();
-		return 0;
-	}
-	logIn();
-//	mask(mask("Sarvar", "bazarov"),"bazarov");
+	//if (PasswordSet() == 1)
+	//{
+	//	signIn();
+	//	return 0;
+	//}
+	//logIn();
+
 	return 0;
 }
