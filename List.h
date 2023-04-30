@@ -63,4 +63,17 @@ public:
 			cout << listOfÑontacts[i].getDisplayName() << endl;
 		}
 	}
+	vector<Contact> searchByName(string searched)
+	{
+		vector<Contact> candidateList;
+		for (int i=0; i < listOfÑontacts.size(); i++)
+		{
+			if (listOfÑontacts[i].getDisplayName().find(searched) != std::string::npos)
+			{
+				candidateList.push_back(listOfÑontacts[i]);
+			}
+		}
+		return candidateList;
+	}
+
 };

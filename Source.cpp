@@ -65,7 +65,7 @@ void signIn()
 	}
 	fstream shadowF("shadow", ios::out | ios::trunc); //file to store password in "protected" way
 	fstream passwdF("passwd", ios::out | ios::trunc); //file to store username
-	//files are replicating /etc/shadow and /etc/passwd
+	//files are replicating /etc/shadow and /etc/passwd in Linux 
 	shadowF << mask(passwd, "shadow");
 	passwdF << username;
 	shadowF.close();
@@ -74,7 +74,7 @@ void signIn()
 
 int logIn()
 {
-	string passwd, username, cpasswd, cusername;
+	string passwd, username, cpasswd, cusername; //c for correct
 	fstream shadowF("shadow", ios::in);
 	fstream passwdF("passwd", ios::in);
 	getline(shadowF, cpasswd); //getting userna,e and password from files
