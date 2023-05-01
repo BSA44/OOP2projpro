@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <regex>
 #include <vector>
+#include "contact_csv.h"
 
 using namespace std;
 
@@ -81,7 +82,7 @@ public:
     DateOfBirth(int d, int m, int y)
     {
         day = 1;
-        month = 1; 
+        month = 1;
         year = 1970; // 1 Jan 1970 is a common starting time value
 
         setDay(d);
@@ -112,7 +113,7 @@ public:
             }
 
         }
-        
+
         // 12 character long phone number is not suitable for all countries
 
         if (allNumber) this->number = number;
@@ -120,6 +121,9 @@ public:
     string getNumber() const {
         return this->number;
     }
+
+    PhoneNumber(string n) : number(n) {};
+    PhoneNumber() : number("") {};
     //friend void operator <<(ostream& cout, PhoneNumber p);
     void* operator new(size_t size) {
         void* p = (void*)malloc(size);
@@ -163,21 +167,21 @@ private:
     string email;
 public:
     void set(string email) {
-        
+
         // Correct way to validate email using regex
 
         regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
 
         if (regex_match(email, pattern)) {
-            this->email=email;
+            this->email = email;
         }
 
         // Fix: unwanted modification in case of invalid input
     }
-    //string string() const
-    //{
-    //    return email;
-    //}
+    string getstr() const
+    {
+        return email;
+    }
 
     Email(string email)
     {
@@ -203,7 +207,7 @@ private:
     vector<PhoneNumber> phoneNums;
     vector<Email> emails;
 public:
-    
+
     Contact() {
         counter++;
         this->ID = to_string(counter);
@@ -242,8 +246,12 @@ public:
     void setPhoneNumByID(int i, string phon) {
         phoneNums[i].setNumber(phon);
     }
-    PhoneNumber getPhoneNumByID(int i) { 
+    PhoneNumber getPhoneNumByID(int i) {
         return phoneNums[i];
+    }
+    int phoneNumbersCount()
+    {
+        return phoneNums.size();
     }
     void setEmailByID(int i, string mail)
     {
@@ -252,7 +260,15 @@ public:
     Email getEmailByID(int i) {
         return emails[i];
     }
-   // friend void operator << (ostream& out, Contact& contact);
+    int emailsCount()
+    {
+        return emails.size();
+    }
+
+    friend csv::csv_t toCSV(Contact&);
+    friend Contact toContact(csv::csv_t&);
+
+    // friend void operator << (ostream& out, Contact& contact);
     void* operator new(size_t size) {
         void* p = (void*)malloc(size);
         return p;
