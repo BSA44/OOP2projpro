@@ -2,11 +2,11 @@
 
 #include"csv.h"
 #include"PhoneApp3.h"
-#include"string"
+#include<string>
 
-csv::csv_t toCSV(Contact& contact)
+csv::csv_t toCSV(Contact contact)
 {
-	csv::csv_t result;
+	csv::csv_t result = { {} };
 	result.resize(6);
 
 	result[0][0] = contact.getID();
@@ -32,9 +32,11 @@ csv::csv_t toCSV(Contact& contact)
 	result[5][0] = contact.getDateOfBirth().getDay();
 	result[5][1] = contact.getDateOfBirth().getMonth();
 	result[5][2] = contact.getDateOfBirth().getYear();
+
+	return result;
 }
 
-Contact toContact(csv::csv_t& csvdata)
+Contact toContact(csv::csv_t csvdata)
 {
 	Contact result;
 	result.setID(csvdata[0][0]);
@@ -58,4 +60,6 @@ Contact toContact(csv::csv_t& csvdata)
 			std::stoi(csvdata[5][2])
 		)
 	);
+
+	return result;
 }

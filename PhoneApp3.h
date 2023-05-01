@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <regex>
 #include <vector>
-#include "contact_csv.h"
 
 using namespace std;
 
@@ -199,7 +198,6 @@ public:
 
 class Contact {
 private:
-    static int counter;
     string displayName;
     string address;
     string ID;
@@ -209,8 +207,6 @@ private:
 public:
 
     Contact() {
-        counter++;
-        this->ID = to_string(counter);
     }
 
     void setDisplayName(string text) {
@@ -265,8 +261,8 @@ public:
         return emails.size();
     }
 
-    friend csv::csv_t toCSV(Contact&);
-    friend Contact toContact(csv::csv_t&);
+    friend csv::csv_t toCSV(Contact);
+    friend Contact toContact(csv::csv_t);
 
     // friend void operator << (ostream& out, Contact& contact);
     void* operator new(size_t size) {

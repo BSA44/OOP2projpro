@@ -1,11 +1,12 @@
 #pragma once
-#include<fstream>
 #include<vector>
 #include<string>
 #include<iostream>
 #include"csv.h"
+#include"contact_csv.h"
 #include"file.h"
-//#include"PhoneApp.h"
+#include"utils.h"
+#include"PhoneApp3.h"
 
 
 using namespace std;
@@ -36,11 +37,49 @@ class ContactsList
 private:
 	static int count;
 	vector<Contact> listOfÑontacts;
+	string password;
 public:
-	ContactsList() {};
-	void init() //initialize list from file
+	string getPassword() const
 	{
-		
+		return password;
+	}
+
+	void setPassword(string newValue)
+	{
+		password = newValue;
+	}
+
+	ContactsList() {};
+	void init(string password)
+	{
+		this->password = password;
+
+		ReadStatus rstat;
+		csv::csv_t initdata = csv::parse(mask(readFile("./data/.init", rstat), password));
+
+		if (rstat == ReadStatus::ERROR)
+		{
+			createdir("./data");
+			WriteStatus iwstat;
+			csv::csv_t empty = { { "0" } };
+			writeFile("./data/.init", mask(csv::convert(empty), password), iwstat);
+			return;
+		}
+
+		this->count = stoi(initdata[0][0]);
+
+		if (this->count == 0)
+		{
+			return;
+		}
+
+		for (int i = 0; i < initdata[1].size(); i++)
+		{
+			ReadStatus crstat;
+			string content = mask(readFile("./data/" + initdata[1][i], crstat), password);
+			Contact contact = toContact(csv::parse(content));
+			this->addContact(contact);
+		}
 	}
 	void addContact(Contact cntc)
 	{
@@ -65,14 +104,42 @@ public:
 		}
 	}
 
-	void createContact()
+	void createContact(Contact contact) // only contact data matters, id will be modified
 	{
-		// create contact
-		// increase count
-		// add id to id list in init file
-		// increase count in init file
+		this->count++;
+		contact.setID(to_string(count));
+		ReadStatus rstat;
+		csv::csv_t initdata = csv::parse(mask(readFile("./data/.init", rstat), password));
+		initdata[0][0] = to_string(this->count);
+		initdata[1].push_back(contact.getID());
+		WriteStatus iwstat;
+		writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
+		
+		WriteStatus cwstat;
+		writeFile("./data/" + contact.getID(), mask(csv::convert(toCSV(contact)), password), cwstat);
 
-		// getCsv -> add new entry -> writeCSV
+	}
+
+	void deleteContact(string ID)
+	{
+		for (int i = 0; i < listOfÑontacts.size(); i++)
+		{
+			if (listOfÑontacts[i].getID() == ID)
+			{
+				listOfÑontacts.erase(listOfÑontacts.begin() + i);
+				ReadStatus rstat;
+				csv::csv_t initdata = csv::parse(mask(readFile("./data/.init", rstat), password));
+				for (int j = 0; j < initdata.size(); j++)
+				{
+					if (initdata[1][j] == ID)
+					{
+						initdata[1].erase(initdata[1].begin() + j);
+					}
+				}
+				WriteStatus iwstat;
+				writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
+			}
+		}
 	}
 
 	vector<Contact> searchByName(string searched)

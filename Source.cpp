@@ -107,7 +107,7 @@ int logIn()
 //add with insertion sort. To be used in listofContacts
 
 
-int Contact::counter = 0;
+int ContactsList::count = 0;
 int main()
 {
 	//if (PasswordSet() == 1)
