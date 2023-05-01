@@ -25,6 +25,7 @@
     <ClInclude Include="contact_csv.h" />
     <ClInclude Include="csv.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="legacy1.h" />
