@@ -34,6 +34,7 @@ string toLower(string str)
 class ContactsList
 {
 private:
+	static int count;
 	vector<Contact> listOf—ontacts;
 public:
 	ContactsList() {};
@@ -63,6 +64,17 @@ public:
 			cout << listOf—ontacts[i].getDisplayName() << endl;
 		}
 	}
+
+	void createContact()
+	{
+		// create contact
+		// increase count
+		// add id to id list in init file
+		// increase count in init file
+
+		// getCsv -> add new entry -> writeCSV
+	}
+
 	vector<Contact> searchByName(string searched)
 	{
 		vector<Contact> candidateList;

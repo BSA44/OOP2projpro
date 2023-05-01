@@ -17,10 +17,12 @@ using namespace files;
 //this will check if user created  and on this basis willopen either login or signin
 int PasswordSet()
 {
-	string passwd;
-	fstream shadowF("shadow", ios::in);
-	getline(shadowF, passwd);
-	if (passwd == "")
+	ReadStatus rstat;
+	string passwd=readFile("./shadow",rstat);
+	//fstream shadowF("shadow", ios::in);
+	//getline(shadowF, passwd);
+	
+	if (rstat==ReadStatus::ERROR)
 	{
 		return 1; //make ui read this. So if passwd (password) is empty - open sign in
 	}
@@ -63,22 +65,25 @@ void signIn()
 		}
 		cout << "Incorrect!Try again" << endl;
 	}
-	fstream shadowF("shadow", ios::out | ios::trunc); //file to store password in "protected" way
-	fstream passwdF("passwd", ios::out | ios::trunc); //file to store username
-	//files are replicating /etc/shadow and /etc/passwd in Linux 
-	shadowF << mask(passwd, "shadow");
-	passwdF << username;
-	shadowF.close();
-	passwdF.close();
+	//fstream shadowF("shadow", ios::out | ios::trunc); //file to store password in "protected" way
+	//fstream passwdF("passwd", ios::out | ios::trunc); //file to store username
+	////files are replicating /etc/shadow and /etc/passwd in Linux 
+	//shadowF << mask(passwd, "shadow");
+	//passwdF << username;
+	//shadowF.close();
+	//passwdF.close();
+	WriteStatus wrstatus;
+	writeFile("./shadow", mask(passwd, "shadow"), wrstatus);
+	writeFile("./passwd", username, wrstatus);
 }
 
 int logIn()
 {
+	ReadStatus rstat;
 	string passwd, username, cpasswd, cusername; //c for correct
-	fstream shadowF("shadow", ios::in);
-	fstream passwdF("passwd", ios::in);
-	getline(shadowF, cpasswd); //getting userna,e and password from files
-	getline(passwdF, cusername);
+	cpasswd = mask(readFile("./shadow", rstat), "shadow");
+	cusername = readFile("./passwd", rstat);
+	
 	cout << "Wellcome!" << endl;
 	for (int i = 0; i < 3; i++) //we will give 3 attemps for log in, to avoid bruteforce
 	{
@@ -89,35 +94,18 @@ int logIn()
 	if ((mask(passwd, "shadow") == cpasswd) && (username == cusername))
 	{
 		cout << "Successful login!" << endl;
-		shadowF.close();
-		passwdF.close();
 		return 0; //on successful login
 
 	}
 	cout << "Incorrect credentials!" << endl; //I do not specify what is wrong for more safety
 	}
 	cout << "Closing app..." << endl;
-	shadowF.close();
-	passwdF.close();
 	return 1; //after 3 unseccesful logins close app
 }
 
 
 //add with insertion sort. To be used in listofContacts
-void add(string added, vector<string> strArr)
-{
-	strArr.push_back(added);
-	int i = strArr.size()-1;
-	while(i>0)
-	{
 
-		if (toLower(strArr[i]) < toLower(strArr[i-1]))
-		{
-			swap(strArr[i], strArr[i - 1]);
-		}
-		i--;
-	}
-}
 
 int Contact::counter = 0;
 int main()
