@@ -154,5 +154,21 @@ public:
 		}
 		return candidateList;
 	}
+	vector<Contact> searchByEmail(string searched)
+	{
+		vector<Contact> candidateList;
+		for (int i = 0; i < listOfÑontacts.size(); i++)
+		{
+			for (int k = 0; k < listOfÑontacts[i].emailsCount(); k++)
+			{
+				if (listOfÑontacts[i].getEmailByID(k).getstr().find(searched) != std::string::npos)
+				{
+					candidateList.push_back(listOfÑontacts[i]);
+				}
+			}
+			
+		}
+		return candidateList;
+	}
 
 };
