@@ -95,8 +95,12 @@ public:
     //    void* p = (void*)malloc(size);
     //    return p;
     //}
+    friend void operator <<(ostream& out, DateOfBirth& dob);
 };
 
+void operator <<(ostream& out, DateOfBirth& dob) {
+    out << dob.day << "." << dob.month << "." << dob.year << endl;
+}
 class PhoneNumber {
 private:
     string number;
@@ -123,43 +127,43 @@ public:
 
     PhoneNumber(string n) : number(n) {};
     PhoneNumber() : number("") {};
-    //friend void operator <<(ostream& cout, PhoneNumber p);
+    friend void operator <<(ostream& cout, PhoneNumber p);
     void* operator new(size_t size) {
         void* p = (void*)malloc(size);
         return p;
     }
 };
 
-//void operator <<(ostream& cout, PhoneNumber p) //for beautiful and formatted output
-//{
-//    int i = 0;
-//    cout << "+(";
-//    for (; i < 3; i++)
-//    {
-//        cout << p.number[i];
-//    }
-//    cout << ") ";
-//    for (; i < 5; i++)
-//    {
-//        cout << p.number[i];
-//    }
-//    cout << "-";
-//    for (; i < 8; i++)
-//    {
-//        cout << p.number[i];
-//    }
-//    cout << "-";
-//    for (; i < 10; i++)
-//    {
-//        cout << p.number[i];
-//    }
-//    cout << "-";
-//    for (; i < 12; i++)
-//    {
-//        cout << p.number[i];
-//    }
-//    cout << endl;
-//}
+void operator <<(ostream& cout, PhoneNumber p) //for beautiful and formatted output
+{
+    int i = 0;
+    cout << "+(";
+    for (; i < 3; i++)
+    {
+        cout << p.number[i];
+    }
+    cout << ") ";
+    for (; i < 5; i++)
+    {
+        cout << p.number[i];
+    }
+    cout << "-";
+    for (; i < 8; i++)
+    {
+        cout << p.number[i];
+    }
+    cout << "-";
+    for (; i < 10; i++)
+    {
+        cout << p.number[i];
+    }
+    cout << "-";
+    for (; i < 12; i++)
+    {
+        cout << p.number[i];
+    }
+    cout << endl;
+}
 
 class Email {
 private:
@@ -193,8 +197,13 @@ public:
         void* p = (void*)malloc(size);
         return p;
     }
+    friend void operator <<(ostream& out, Email& em);
 };
 
+
+void operator <<(ostream& out, Email& em) {
+    out << em.email << endl;
+}
 
 class Contact {
 private:
@@ -264,7 +273,7 @@ public:
     friend csv::csv_t toCSV(Contact);
     friend Contact toContact(csv::csv_t);
 
-    // friend void operator << (ostream& out, Contact& contact);
+ friend void operator << (ostream& out, Contact& contact);
     void* operator new(size_t size) {
         void* p = (void*)malloc(size);
         return p;
@@ -272,11 +281,17 @@ public:
 };
 
 
-//void operator <<(ostream& out, Contact& contact) {
-//    out << "Name       -" << contact.getDisplayName() << endl;
+void operator <<(ostream& out, Contact& contact) {
+    cout << "Name:   " << contact.displayName << endl;
 
-//    out << "Number     -" << contact.getPhoneNumByID() << endl;
-//    out << "Gender     -" << contact.getGender() << endl;
-//    out << "Email      -" << contact.getEmailByID << endl;
-//    out << "Address    -" << contact.getAddress() << endl;
-//}
+    for (int i = 0; i < contact.phoneNums.size(); i++)
+    {
+        cout << "Number " << i << ":  " << contact.phoneNums[i];
+    }
+    for (int i = 0; i < contact.emails.size(); i++)
+    {
+        cout << "Email " << i << ":  " << contact.emails[i];
+    }
+    out << "Address:  " << contact.address << endl;
+    cout << "Date of birth : " << contact.dateOfBirth;
+}

@@ -142,33 +142,46 @@ public:
 		}
 	}
 
-	vector<Contact> searchByName(string searched)
+	vector<string> search(string searched)
 	{
-		vector<Contact> candidateList;
+		vector<string> candidateList;
 		for (int i=0; i < listOfÑontacts.size(); i++)
 		{
 			if (listOfÑontacts[i].getDisplayName().find(searched) != std::string::npos)
 			{
-				candidateList.push_back(listOfÑontacts[i]);
+				candidateList.push_back(listOfÑontacts[i].getID());
+			}
+		}
+		for (int i = 0; i < listOfÑontacts.size(); i++)
+		{
+			for (int ii = 0; ii < listOfÑontacts[i].phoneNumbersCount(); ii++)
+			{
+				if (listOfÑontacts[i].getPhoneNumByID(ii).getNumber().find(searched) != std::string::npos)
+				{
+					bool alreadyAdded = false;
+					for (int iii = 0; iii < candidateList.size(); iii++)
+					{
+						if (candidateList[iii] == listOfÑontacts[i].getID())
+						{
+							alreadyAdded = true;
+							break;
+						}
+					}
+					if (!alreadyAdded) candidateList.push_back(listOfÑontacts[i].getID());
+				}
 			}
 		}
 		return candidateList;
 	}
-	vector<Contact> searchByEmail(string searched)
+	Contact getContactByID(string givenID)
 	{
-		vector<Contact> candidateList;
-		for (int i = 0; i < listOfÑontacts.size(); i++)
+		for (auto& i : listOfÑontacts)//for...of cycle, i stores value instead of index
 		{
-			for (int k = 0; k < listOfÑontacts[i].emailsCount(); k++)
+			if (i.getID() == givenID)
 			{
-				if (listOfÑontacts[i].getEmailByID(k).getstr().find(searched) != std::string::npos)
-				{
-					candidateList.push_back(listOfÑontacts[i]);
-				}
+				return i;
 			}
-			
 		}
-		return candidateList;
 	}
 
 };

@@ -10,6 +10,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <regex>
+#include "UI.h"
 using namespace std;
 using namespace csv;
 using namespace files;
@@ -110,12 +111,13 @@ int logIn()
 int ContactsList::count = 0;
 int main()
 {
-	//if (PasswordSet() == 1)
-	//{
-	//	signIn();
-	//	return 0;
-	//}
-	//logIn();
-
+	UI ui;
+	/*if (PasswordSet() == 1)
+	{
+		signIn();
+		return 0;
+	}
+	logIn();*/
+	ui.start();
 	return 0;
 }
