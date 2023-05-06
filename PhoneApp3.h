@@ -265,6 +265,12 @@ public:
     Email getEmailByID(int i) {
         return emails[i];
     }
+
+    void addEmail(Email em)
+    {
+        emails.push_back(em);
+    }
+
     int emailsCount()
     {
         return emails.size();

@@ -97,7 +97,7 @@ public:
 	{
 		return state;
 	}
-	
+
 	UI* prev()
 	{
 		if (state.getLoc() != "home")
@@ -139,6 +139,26 @@ public:
 					searchMenu(state.getArgs()[0]);
 				}
 			}
+
+			if (state.getLoc() == "list")
+			{
+				listContacts();
+			}
+
+			if (state.getLoc() == "createContact")
+			{
+				createContact();
+			}
+
+			if (state.getLoc() == "details")
+			{
+				details(state.getArgs()[0]);
+			}
+
+			if (state.getLoc() == "edit")
+			{
+				editContact(state.getArgs()[0]);
+			}
 		}
 	}
 
@@ -150,7 +170,7 @@ public:
 		cout << "2. Search contact" << endl;
 		cout << "3. List of contacts" << endl;
 		cout << "0. Exit" << endl;
-		
+
 		int selection;
 
 		cin >> selection;
@@ -218,7 +238,7 @@ public:
 					cout << i + 1 << ". " << List.getContactByID(searchResults[i]).getDisplayName() << endl;
 				}
 			}
-		
+
 			cout << "Input 0 to continue search" << endl;
 			cout << "Input number of result to get more info" << endl;
 			cout << "Input -1 to go home" << endl;
@@ -245,21 +265,152 @@ public:
 
 		} while (pick == 0);
 	}
-	void datails(string ID)
+	void details(string ID)
 	{
 		Contact target;
-		target=List.getContactByID(ID);
+		target = List.getContactByID(ID);
 		cout << target;
+		cout << "1. Edit contact" << endl;
+		cout << "2. Delete this contact" << endl;
+		cout << "0. Back" << endl;
+		cout << "-1. Home" << endl;
+		int choice;
+		cin >> choice;
 
+		while (!isBetween(-1, choice, 2))
+		{
+			cout << "Invalid choice, please try again" << endl;
+			cin >> choice;
+		}
+
+		switch (choice)
+		{
+		case -1:
+			goToHome();
+			break;
+		case 0:
+			prev();
+			break;
+		case 1:
+			this->state = UIstate({ "edit", ID });
+			this->route.addState(this->state);
+			break;
+		case 2:
+		{
+			cout << "Do you really wish to delete this contact?\n1 - yes, 0 - no" << endl;
+			int choice;
+			cin >> choice;
+
+			while (!isBetween(0, choice, 1))
+			{
+				cout << "Invalid choice, please try again" << endl;
+				cin >> choice;
+			}
+
+			if (choice == 1)
+			{
+				List.deleteContact(ID);
+				prev();
+			}
+		}
+			break;
+		}
 	}
 	void listContacts()
 	{
+		for (int i = 0; i < List.getVector().size(); i++)
+		{
+			cout << i + 1 << ". " << List.getVector()[i].getDisplayName() << endl;
+		}
 
+		cout << "Input number of contact to view details" << endl;
+		cout << "0. Back" << endl;
+		int choice;
+		cin >> choice;
+
+		while (!isBetween(0, choice, List.getVector().size()))
+		{
+			cout << "Invalid choice, please try again" << endl;
+			cin >> choice;
+		}
+
+		switch (choice)
+		{
+		case 0:
+			prev();
+			break;
+		default:
+			this->state = UIstate({ "details", List.getVector()[choice - 1].getID() });
+			this->route.addState(this->state);
+			break;
+		}
 	}
 
 	void createContact()
 	{
+		cout << "Input contact name: " << endl;
+		string name;
+		cin.ignore();
+		getline(cin, name);
 
+		bool nameExists = false;
+		string existingID;
+
+		for (int i = 0; i < List.getVector().size(); i++)
+		{
+			if (List.getVector()[i].getDisplayName() == name)
+			{
+				nameExists = true;
+				existingID = List.getVector()[i].getID();
+			}
+
+			if (nameExists)
+			{
+				cout << "Contact with such name already exists, do you wish to edit this contact?\n(1 - yes, 0 - no)" << endl;
+				int choice;
+				cin >> choice;
+
+				while (!isBetween(0, choice, 1))
+				{
+					cout << "Invalid choice, please try again" << endl;
+					cin >> choice;
+				}
+
+				switch (choice)
+				{
+				case 0:
+					prev();
+					break;
+				case 1:
+					goToHome();
+					this->state = UIstate({ "edit", existingID });
+					this->route.addState(this->state);
+				default:
+					break;
+				}
+
+				return;
+			}
+		}
+
+		cout << "Input phone number: " << endl;
+		string phoneNum;
+		cin.ignore();
+		getline(cin, phoneNum);
+
+		Contact newContact = Contact();
+		newContact.setDisplayName(name);
+		newContact.addPhoneNum(PhoneNumber(phoneNum));
+		newContact.setAddress("");
+		newContact.setDateofBirth(DateOfBirth());
+		newContact.addEmail(Email());
+
+		List.createContact(newContact);
+
+		goToHome();
+	}
+
+	void editContact(string ID)
+	{
 	}
 };
-

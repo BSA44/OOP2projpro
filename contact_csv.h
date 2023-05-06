@@ -9,10 +9,13 @@ csv::csv_t toCSV(Contact contact)
 	csv::csv_t result = { {} };
 	result.resize(6);
 
+	result[0].resize(1);
 	result[0][0] = contact.getID();
 
+	result[1].resize(1);
 	result[1][0] = contact.getDisplayName();
 
+	result[2].resize(1);
 	result[2][0] = contact.getAddress();
 
 
@@ -29,9 +32,9 @@ csv::csv_t toCSV(Contact contact)
 
 
 	result[5].resize(3);
-	result[5][0] = contact.getDateOfBirth().getDay();
-	result[5][1] = contact.getDateOfBirth().getMonth();
-	result[5][2] = contact.getDateOfBirth().getYear();
+	result[5][0] = to_string(contact.getDateOfBirth().getDay());
+	result[5][1] = to_string(contact.getDateOfBirth().getMonth());
+	result[5][2] = to_string(contact.getDateOfBirth().getYear());
 
 	return result;
 }

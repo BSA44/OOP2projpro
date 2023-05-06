@@ -72,7 +72,6 @@ public:
 		{
 			return;
 		}
-
 		for (int i = 0; i < initdata[1].size(); i++)
 		{
 			ReadStatus crstat;
@@ -111,10 +110,10 @@ public:
 		ReadStatus rstat;
 		csv::csv_t initdata = csv::parse(mask(readFile("./data/.init", rstat), password));
 		initdata[0][0] = to_string(this->count);
+		if (initdata.size() == 1) initdata.resize(2);
 		initdata[1].push_back(contact.getID());
 		WriteStatus iwstat;
 		writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
-		
 		WriteStatus cwstat;
 		writeFile("./data/" + contact.getID(), mask(csv::convert(toCSV(contact)), password), cwstat);
 
@@ -140,6 +139,11 @@ public:
 				writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
 			}
 		}
+	}
+
+	vector<Contact>& getVector()
+	{
+		return listOf—ontacts;
 	}
 
 	vector<string> search(string searched)
@@ -173,7 +177,7 @@ public:
 		}
 		return candidateList;
 	}
-	Contact getContactByID(string givenID)
+	Contact& getContactByID(string givenID)
 	{
 		for (auto& i : listOf—ontacts)//for...of cycle, i stores value instead of index
 		{
