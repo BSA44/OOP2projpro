@@ -93,14 +93,31 @@ public:
 			}
 			i--;
 		}
-		
 	}
+
 	void display() //for debug
 	{
 		for (int i = 0; i < listOf—ontacts.size(); i++)
 		{
 			cout << listOf—ontacts[i].getDisplayName() << endl;
 		}
+	}
+
+	void updateContact(string oldID, Contact& newData)
+	{
+		getContactByID(oldID) = newData;
+		int i = listOf—ontacts.size() - 1;
+		while (i > 0)
+		{
+
+			if (toLower(listOf—ontacts[i].getDisplayName()) < toLower(listOf—ontacts[i - 1].getDisplayName()))
+			{
+				swap(listOf—ontacts[i], listOf—ontacts[i - 1]);
+			}
+			i--;
+		}
+		WriteStatus cwstat;
+		writeFile("./data/" + oldID, mask(csv::convert(toCSV(getContactByID(oldID))), password), cwstat);
 	}
 
 	void createContact(Contact contact) // only contact data matters, id will be modified
@@ -177,6 +194,17 @@ public:
 		}
 		return candidateList;
 	}
+
+	Contact& getContactByIndex(int i)
+	{
+		return listOf—ontacts[i];
+	}
+
+	int length()
+	{
+		return listOf—ontacts.size();
+	}
+
 	Contact& getContactByID(string givenID)
 	{
 		for (auto& i : listOf—ontacts)//for...of cycle, i stores value instead of index

@@ -26,7 +26,8 @@ string mask(string plaintext, string passwd)
 	}
 	return ciphertext;
 }
-bool isBetween(float min, float x, float max)
+
+bool isBetween(const int min, const int x, const int max)
 {
-	return (x >= min || x <= max);
+	return ((x >= min) && (x <= max));
 }

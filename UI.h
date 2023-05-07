@@ -7,6 +7,8 @@
 #include "utils.h"
 using namespace std;
 
+string invalid = "Invalid choice, please try again";
+
 class UIstate //stores data about menu
 {
 private:
@@ -119,6 +121,8 @@ public:
 
 	void start()
 	{
+		List.init("");
+
 		goToHome();
 
 		while (state.getLoc() != "exit")
@@ -164,8 +168,6 @@ public:
 
 	void homeMenu()
 	{
-		List.init("");
-
 		cout << "1. Create contact" << endl;
 		cout << "2. Search contact" << endl;
 		cout << "3. List of contacts" << endl;
@@ -177,7 +179,7 @@ public:
 
 		while (!isBetween(0, selection, 3))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> selection;
 		}
 
@@ -196,10 +198,13 @@ public:
 			route.addState(this->state);
 			break;
 		case 0:
-			this->state = UIstate({ "exit" }); break;
+			this->state = UIstate({ "exit" });
+			break;
 		default:
 			break;
 		}
+
+		system("cls");
 	}
 
 	void searchMenu(string query = "")
@@ -260,10 +265,13 @@ public:
 			default:
 				this->state = UIstate({ "details", searchResults[pick - 1] });
 				this->route.addState(this->state);
+				system("cls");
 				return;
 			}
 
 		} while (pick == 0);
+
+		system("cls");
 	}
 	void details(string ID)
 	{
@@ -279,7 +287,7 @@ public:
 
 		while (!isBetween(-1, choice, 2))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> choice;
 		}
 
@@ -303,7 +311,7 @@ public:
 
 			while (!isBetween(0, choice, 1))
 			{
-				cout << "Invalid choice, please try again" << endl;
+				cout << invalid << endl;
 				cin >> choice;
 			}
 
@@ -315,22 +323,23 @@ public:
 		}
 			break;
 		}
+
+		system("cls");
 	}
 	void listContacts()
 	{
-		for (int i = 0; i < List.getVector().size(); i++)
+		for (int i = 0; i < List.length(); i++)
 		{
-			cout << i + 1 << ". " << List.getVector()[i].getDisplayName() << endl;
+			cout << i + 1 << ". " << List.getContactByIndex(i).getDisplayName() << endl;
 		}
 
 		cout << "Input number of contact to view details" << endl;
 		cout << "0. Back" << endl;
 		int choice;
 		cin >> choice;
-
-		while (!isBetween(0, choice, List.getVector().size()))
+		while (!isBetween(0, choice, List.length()))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> choice;
 		}
 
@@ -338,12 +347,15 @@ public:
 		{
 		case 0:
 			prev();
-			break;
+			system("cls");
+			return;
 		default:
-			this->state = UIstate({ "details", List.getVector()[choice - 1].getID() });
+			this->state = UIstate({ "details", List.getContactByIndex(choice - 1).getID()});
 			this->route.addState(this->state);
 			break;
 		}
+
+		system("cls");
 	}
 
 	void createContact()
@@ -356,12 +368,12 @@ public:
 		bool nameExists = false;
 		string existingID;
 
-		for (int i = 0; i < List.getVector().size(); i++)
+		for (int i = 0; i < List.length(); i++)
 		{
-			if (List.getVector()[i].getDisplayName() == name)
+			if (List.getContactByIndex(i).getDisplayName() == name)
 			{
 				nameExists = true;
-				existingID = List.getVector()[i].getID();
+				existingID = List.getContactByIndex(i).getID();
 			}
 
 			if (nameExists)
@@ -372,7 +384,7 @@ public:
 
 				while (!isBetween(0, choice, 1))
 				{
-					cout << "Invalid choice, please try again" << endl;
+					cout << invalid << endl;
 					cin >> choice;
 				}
 
@@ -388,14 +400,13 @@ public:
 				default:
 					break;
 				}
-
+				system("cls");
 				return;
 			}
 		}
 
 		cout << "Input phone number: " << endl;
 		string phoneNum;
-		cin.ignore();
 		getline(cin, phoneNum);
 
 		Contact newContact = Contact();
@@ -406,11 +417,50 @@ public:
 		newContact.addEmail(Email());
 
 		List.createContact(newContact);
-
+		system("cls");
 		goToHome();
 	}
 
 	void editContact(string ID)
 	{
+		int choice;
+
+		do
+		{
+			cout << "Select what to edit" << endl;
+			cout << "1. Name" << endl;
+			cout << "2. Phone number" << endl;
+			cout << "3. Email address" << endl;
+			cout << "4. Address" << endl;
+			cout << "5. Date of Birth" << endl;
+			cout << "0. Back" << endl;
+
+			cin >> choice;
+
+			while (!isBetween(0, choice, 5))
+			{
+				cout << invalid << endl;
+				cin >> choice;
+			}
+
+			switch (choice)
+			{
+			case 1:
+			{
+				cout << "Enter new name:\n" << endl;
+				cin.ignore();
+				string newName;
+				cin >> newName;
+				Contact newData{ List.getContactByID(ID) };
+				newData.setDisplayName(newName);
+				List.updateContact(ID, newData);
+				prev();
+				prev();
+				break;
+			}
+			default:
+				break;
+			}
+		} while (choice > 0);
 	}
 };
