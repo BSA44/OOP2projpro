@@ -124,6 +124,8 @@ public:
 	void start()
 	{
 		List.init("");
+		ReadStatus prstat;
+		passwd = readFile("./data/.psw", prstat);
 
 		this->state = UIstate({ "login" });
 
