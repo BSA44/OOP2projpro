@@ -106,26 +106,16 @@ private:
     string number;
 public:
     void setNumber(string number) {
-        bool allNumber = true;
-        for (int i = 0; i < number.length(); i++)
-        {
-            if (number[i] < 48 || number[i] > 57) // Fix 0 and 9 be out of range
-            {
-                allNumber = false;
-                break;
-            }
-
-        }
-
-        // 12 character long phone number is not suitable for all countries
-
-        if (allNumber) this->number = number;
+        this->number = number;
     }
     string getNumber() const {
         return this->number;
     }
 
-    PhoneNumber(string n) : number(n) {};
+    PhoneNumber(string n)
+    {
+        this->setNumber(n);
+    }
     PhoneNumber() : number("") {};
     friend void operator <<(ostream& cout, PhoneNumber p);
     void* operator new(size_t size) {
@@ -136,6 +126,11 @@ public:
 
 void operator <<(ostream& cout, PhoneNumber p) //for beautiful and formatted output
 {
+    if (p.number.length() != 12)
+    {
+        cout << "+" << p.number << endl;
+        return;
+    }
     int i = 0;
     cout << "+(";
     for (; i < 3; i++)

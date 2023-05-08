@@ -133,7 +133,7 @@ public:
 		writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
 		WriteStatus cwstat;
 		writeFile("./data/" + contact.getID(), mask(csv::convert(toCSV(contact)), password), cwstat);
-
+		addContact(contact);
 	}
 
 	void deleteContact(string ID)
@@ -203,6 +203,22 @@ public:
 	int length()
 	{
 		return listOf—ontacts.size();
+	}
+
+	bool numberExists(string number)
+	{
+		for (auto& cont : listOf—ontacts)
+		{
+			for (int i = 0; i < cont.phoneNumbersCount(); i++)
+			{
+				if (cont.getPhoneNumByID(i).getNumber() == number)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	Contact& getContactByID(string givenID)
