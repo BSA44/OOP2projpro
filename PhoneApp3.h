@@ -287,11 +287,11 @@ void operator <<(ostream& out, Contact& contact) {
 
     for (int i = 0; i < contact.phoneNums.size(); i++)
     {
-        cout << "Number " << i << ":  " << contact.phoneNums[i];
+        cout << "Number " << i + 1 << ":  " << contact.phoneNums[i];
     }
     for (int i = 0; i < contact.emails.size(); i++)
     {
-        cout << "Email " << i << ":  " << contact.emails[i];
+        cout << "Email " << i + 1 << ":  " << contact.emails[i];
     }
     out << "Address:  " << contact.address << endl;
     cout << "Date of birth : " << contact.dateOfBirth;

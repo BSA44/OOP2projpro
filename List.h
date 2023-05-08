@@ -63,8 +63,18 @@ public:
 			WriteStatus iwstat;
 			csv::csv_t empty = { { "0" } };
 			writeFile("./data/.init", mask(csv::convert(empty), password), iwstat);
-			return;
 		}
+
+
+		ReadStatus prstat;
+		readFile("./data/.psw", prstat);
+		if (prstat == ReadStatus::ERROR)
+		{
+			WriteStatus pwstat;
+			writeFile("./data/.psw", "12345", pwstat);
+		}
+
+		if (rstat == ReadStatus::ERROR) return;
 
 		this->count = stoi(initdata[0][0]);
 
@@ -165,10 +175,11 @@ public:
 
 	vector<string> search(string searched)
 	{
+		searched = toLower(searched);
 		vector<string> candidateList;
 		for (int i=0; i < listOfÑontacts.size(); i++)
 		{
-			if (listOfÑontacts[i].getDisplayName().find(searched) != std::string::npos)
+			if (toLower(listOfÑontacts[i].getDisplayName()).find(searched) != std::string::npos)
 			{
 				candidateList.push_back(listOfÑontacts[i].getID());
 			}
