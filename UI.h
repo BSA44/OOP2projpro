@@ -233,7 +233,7 @@ public:
 			route.addState(this->state);
 			break;
 		case 4:
-			this->state = UIstate({ "editPassword" });
+			this->state = UIstate({ "passwordEdit" });
 			this->route.addState(this->state);
 			break;
 		default:
