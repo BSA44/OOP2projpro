@@ -183,7 +183,7 @@ public:
 				loginMenu();
 			}
 
-			if (state.getLoc() == "editPassword")
+			if (state.getLoc() == "passwordEdit")
 			{
 				if (mode == "readonly")
 				{
