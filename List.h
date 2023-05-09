@@ -42,7 +42,7 @@ public:
 	}
 
 	ContactsList() {};
-	void init(string password)
+	void init(string password) //loading our contacts from files
 	{
 		this->password = password;
 

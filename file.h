@@ -11,7 +11,7 @@ using namespace std;
 namespace files
 {
 
-	enum class WriteStatus
+	enum class WriteStatus //to control read write status
 	{
 		SUCCESS = 0,
 		ERROR

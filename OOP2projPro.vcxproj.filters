@@ -29,12 +29,6 @@
     <ClInclude Include="List.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="legacy1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="legacy2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PhoneApp3.h">
       <Filter>Header Files</Filter>
     </ClInclude>

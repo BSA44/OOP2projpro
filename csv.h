@@ -11,6 +11,7 @@ namespace csv
 {
     typedef vector<vector<string>> csv_t;
 
+    //parsing text into csv 
     csv_t parse(string data) {
         vector<vector<string>> result;
         vector<string> row;
@@ -40,7 +41,7 @@ namespace csv
         }
         return result;
     }
-
+    //converting csv to text
     string convert(csv_t data) {
         string result;
         for (auto& row : data) {

@@ -743,7 +743,28 @@ public:
 			}
 		} while (passwd != old);
 
-		string newpassword, confirm;
+
+		string newpassword, cpasswd;
+		
+		while (true)
+		{
+			cout << "Please input password, length should be at least 6 symbols: ";
+			cin >> newpassword;
+			if (newpassword.length() >= 6)
+			{
+				cout << "Confirm password: ";
+				cin >> cpasswd;
+				if (newpassword == cpasswd)
+				{
+					cout << "Password set succesfully!" << endl;
+					break;
+				}
+				cout << "Passwords do not match!" << endl;
+			}
+			cout << "Incorrect!Try again" << endl;
+		}
+
+		/*string newpassword, confirm;
 		cout << "Input new password:" << endl;
 		getline(cin, newpassword);
 
@@ -753,7 +774,7 @@ public:
 		{
 			cout << "Passwords do not match, try again" << endl;
 			getline(cin, confirm);
-		}
+		}*/
 
 		WriteStatus pwstat;
 		writeFile("./data/.psw", newpassword, pwstat);
@@ -775,19 +796,19 @@ public:
 		
 	}
 
-	int PasswordSet()
-	{
-		ReadStatus rstat;
-		string passwd = readFile("./shadow", rstat);
-		//fstream shadowF("shadow", ios::in);
-		//getline(shadowF, passwd);
+	//int PasswordSet()
+	//{
+	//	ReadStatus rstat;
+	//	string passwd = readFile("./shadow", rstat);
+	//	//fstream shadowF("shadow", ios::in);
+	//	//getline(shadowF, passwd);
 
-		if (rstat == ReadStatus::ERROR)
-		{
-			return 1; //make ui read this. So if passwd (password) is empty - open sign in
-		}
-		return 0; //if not empty - open log in
-	}
+	//	if (rstat == ReadStatus::ERROR)
+	//	{
+	//		return 1; //make ui read this. So if passwd (password) is empty - open sign in
+	//	}
+	//	return 0; //if not empty - open log in
+	//}
 
 	void loginMenu()
 	{
@@ -816,20 +837,21 @@ public:
 		case 2:
 		{
 			string input;
-			cin.ignore();
-			cout << "Input password:" << endl;
-			do
+
+			for (int i=0; i< 3; i++)
 			{
+				cin.ignore();
+				cout << "Input password:" << endl;
 				getline(cin, input);
 
-				if (passwd != input)
+				if (passwd == input)
 				{
-					cout << "Incorrect password" << endl;
+					mode = "admin";
+					goToHome();
+					break;
 				}
-			} while (passwd != input);
-
-			mode = "admin";
-			goToHome();
+				cout << "Incorrect password! Try again" << endl;
+			} 
 		}
 		}
 		system("cls");

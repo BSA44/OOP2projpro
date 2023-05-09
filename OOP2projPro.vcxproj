@@ -28,8 +28,6 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="List.h" />
-    <ClInclude Include="legacy1.h" />
-    <ClInclude Include="legacy2.h" />
     <ClInclude Include="PhoneApp3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

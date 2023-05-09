@@ -4,7 +4,7 @@
 #include"PhoneApp3.h"
 #include<string>
 
-csv::csv_t toCSV(Contact contact)
+csv::csv_t toCSV(Contact contact) //converting contact to csv
 {
 	csv::csv_t result = { {} };
 	result.resize(6);
@@ -39,7 +39,7 @@ csv::csv_t toCSV(Contact contact)
 	return result;
 }
 
-Contact toContact(csv::csv_t csvdata)
+Contact toContact(csv::csv_t csvdata)  //converting csv file to the contact object
 {
 	Contact result;
 	result.setID(csvdata[0][0]);
