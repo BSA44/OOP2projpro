@@ -63,8 +63,18 @@ public:
 			WriteStatus iwstat;
 			csv::csv_t empty = { { "0" } };
 			writeFile("./data/.init", mask(csv::convert(empty), password), iwstat);
-			return;
 		}
+
+
+		ReadStatus prstat;
+		readFile("./data/.psw", prstat);
+		if (prstat == ReadStatus::ERROR)
+		{
+			WriteStatus pwstat;
+			writeFile("./data/.psw", "12345", pwstat);
+		}
+
+		if (rstat == ReadStatus::ERROR) return;
 
 		this->count = stoi(initdata[0][0]);
 
@@ -93,14 +103,31 @@ public:
 			}
 			i--;
 		}
-		
 	}
+
 	void display() //for debug
 	{
 		for (int i = 0; i < listOf—ontacts.size(); i++)
 		{
 			cout << listOf—ontacts[i].getDisplayName() << endl;
 		}
+	}
+
+	void updateContact(string oldID, Contact& newData)
+	{
+		getContactByID(oldID) = newData;
+		int i = listOf—ontacts.size() - 1;
+		while (i > 0)
+		{
+
+			if (toLower(listOf—ontacts[i].getDisplayName()) < toLower(listOf—ontacts[i - 1].getDisplayName()))
+			{
+				swap(listOf—ontacts[i], listOf—ontacts[i - 1]);
+			}
+			i--;
+		}
+		WriteStatus cwstat;
+		writeFile("./data/" + oldID, mask(csv::convert(toCSV(getContactByID(oldID))), password), cwstat);
 	}
 
 	void createContact(Contact contact) // only contact data matters, id will be modified
@@ -116,7 +143,7 @@ public:
 		writeFile("./data/.init", mask(csv::convert(initdata), password), iwstat);
 		WriteStatus cwstat;
 		writeFile("./data/" + contact.getID(), mask(csv::convert(toCSV(contact)), password), cwstat);
-
+		addContact(contact);
 	}
 
 	void deleteContact(string ID)
@@ -148,10 +175,11 @@ public:
 
 	vector<string> search(string searched)
 	{
+		searched = toLower(searched);
 		vector<string> candidateList;
 		for (int i=0; i < listOf—ontacts.size(); i++)
 		{
-			if (listOf—ontacts[i].getDisplayName().find(searched) != std::string::npos)
+			if (toLower(listOf—ontacts[i].getDisplayName()).find(searched) != std::string::npos)
 			{
 				candidateList.push_back(listOf—ontacts[i].getID());
 			}
@@ -177,6 +205,33 @@ public:
 		}
 		return candidateList;
 	}
+
+	Contact& getContactByIndex(int i)
+	{
+		return listOf—ontacts[i];
+	}
+
+	int length()
+	{
+		return listOf—ontacts.size();
+	}
+
+	bool numberExists(string number)
+	{
+		for (auto& cont : listOf—ontacts)
+		{
+			for (int i = 0; i < cont.phoneNumbersCount(); i++)
+			{
+				if (cont.getPhoneNumByID(i).getNumber() == number)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	Contact& getContactByID(string givenID)
 	{
 		for (auto& i : listOf—ontacts)//for...of cycle, i stores value instead of index

@@ -7,6 +7,8 @@
 #include "utils.h"
 using namespace std;
 
+string invalid = "Invalid choice, please try again";
+
 class UIstate //stores data about menu
 {
 private:
@@ -86,6 +88,8 @@ private:
 	UIroute route; // was
 	UIstate state; // is
 	ContactsList List;
+	string mode;
+	string passwd;
 public:
 
 	UIroute& getRoute()
@@ -119,7 +123,11 @@ public:
 
 	void start()
 	{
-		goToHome();
+		List.init("");
+		ReadStatus prstat;
+		passwd = readFile("./data/.psw", prstat);
+
+		this->state = UIstate({ "login" });
 
 		while (state.getLoc() != "exit")
 		{
@@ -147,6 +155,11 @@ public:
 
 			if (state.getLoc() == "createContact")
 			{
+				if (mode == "readonly")
+				{
+					restrictionFallbackMenu();
+					continue;
+				}
 				createContact();
 			}
 
@@ -157,32 +170,56 @@ public:
 
 			if (state.getLoc() == "edit")
 			{
+				if (mode == "readonly")
+				{
+					restrictionFallbackMenu();
+					continue;
+				}
 				editContact(state.getArgs()[0]);
+			}
+
+			if (state.getLoc() == "login")
+			{
+				loginMenu();
+			}
+
+			if (state.getLoc() == "editPassword")
+			{
+				if (mode == "readonly")
+				{
+					restrictionFallbackMenu();
+					continue;
+				}
+				passwordEdit();
 			}
 		}
 	}
 
 	void homeMenu()
 	{
-		List.init("");
-
 		cout << "1. Create contact" << endl;
 		cout << "2. Search contact" << endl;
 		cout << "3. List of contacts" << endl;
+		cout << "4. Change password" << endl;
 		cout << "0. Exit" << endl;
 
 		int selection;
 
 		cin >> selection;
 
-		while (!isBetween(0, selection, 3))
+		while (!isBetween(0, selection, 4))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> selection;
 		}
 
 		switch (selection)
 		{
+		case 0:
+			this->route.getVector().clear();
+			this->state = UIstate({ "login" });
+			this->route.addState(this->state);
+			break;
 		case 1:
 			this->state = UIstate({ "createContact" });
 			route.addState(this->state);
@@ -195,11 +232,14 @@ public:
 			this->state = UIstate({ "list" });
 			route.addState(this->state);
 			break;
-		case 0:
-			this->state = UIstate({ "exit" }); break;
+		case 4:
+			this->state = UIstate({ "passwordEdit" });
+			this->route.addState(this->state);
 		default:
 			break;
 		}
+
+		system("cls");
 	}
 
 	void searchMenu(string query = "")
@@ -260,10 +300,13 @@ public:
 			default:
 				this->state = UIstate({ "details", searchResults[pick - 1] });
 				this->route.addState(this->state);
+				system("cls");
 				return;
 			}
 
 		} while (pick == 0);
+
+		system("cls");
 	}
 	void details(string ID)
 	{
@@ -279,7 +322,7 @@ public:
 
 		while (!isBetween(-1, choice, 2))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> choice;
 		}
 
@@ -297,13 +340,19 @@ public:
 			break;
 		case 2:
 		{
+			if (mode == "readonly")
+			{
+				cout << "Available only in administrator mode" << endl;
+				system("pause");
+				break;
+			}
 			cout << "Do you really wish to delete this contact?\n1 - yes, 0 - no" << endl;
 			int choice;
 			cin >> choice;
 
 			while (!isBetween(0, choice, 1))
 			{
-				cout << "Invalid choice, please try again" << endl;
+				cout << invalid << endl;
 				cin >> choice;
 			}
 
@@ -315,22 +364,23 @@ public:
 		}
 			break;
 		}
+
+		system("cls");
 	}
 	void listContacts()
 	{
-		for (int i = 0; i < List.getVector().size(); i++)
+		for (int i = 0; i < List.length(); i++)
 		{
-			cout << i + 1 << ". " << List.getVector()[i].getDisplayName() << endl;
+			cout << i + 1 << ". " << List.getContactByIndex(i).getDisplayName() << endl;
 		}
 
 		cout << "Input number of contact to view details" << endl;
 		cout << "0. Back" << endl;
 		int choice;
 		cin >> choice;
-
-		while (!isBetween(0, choice, List.getVector().size()))
+		while (!isBetween(0, choice, List.length()))
 		{
-			cout << "Invalid choice, please try again" << endl;
+			cout << invalid << endl;
 			cin >> choice;
 		}
 
@@ -338,12 +388,15 @@ public:
 		{
 		case 0:
 			prev();
-			break;
+			system("cls");
+			return;
 		default:
-			this->state = UIstate({ "details", List.getVector()[choice - 1].getID() });
+			this->state = UIstate({ "details", List.getContactByIndex(choice - 1).getID()});
 			this->route.addState(this->state);
 			break;
 		}
+
+		system("cls");
 	}
 
 	void createContact()
@@ -356,12 +409,12 @@ public:
 		bool nameExists = false;
 		string existingID;
 
-		for (int i = 0; i < List.getVector().size(); i++)
+		for (int i = 0; i < List.length(); i++)
 		{
-			if (List.getVector()[i].getDisplayName() == name)
+			if (List.getContactByIndex(i).getDisplayName() == name)
 			{
 				nameExists = true;
-				existingID = List.getVector()[i].getID();
+				existingID = List.getContactByIndex(i).getID();
 			}
 
 			if (nameExists)
@@ -372,7 +425,7 @@ public:
 
 				while (!isBetween(0, choice, 1))
 				{
-					cout << "Invalid choice, please try again" << endl;
+					cout << invalid << endl;
 					cin >> choice;
 				}
 
@@ -388,15 +441,15 @@ public:
 				default:
 					break;
 				}
-
+				system("cls");
 				return;
 			}
 		}
 
-		cout << "Input phone number: " << endl;
+		
 		string phoneNum;
-		cin.ignore();
-		getline(cin, phoneNum);
+		phoneNum = validNumber(true);
+		// 12 character long phone number is not suitable for all countries
 
 		Contact newContact = Contact();
 		newContact.setDisplayName(name);
@@ -406,11 +459,448 @@ public:
 		newContact.addEmail(Email());
 
 		List.createContact(newContact);
-
+		cout << "Contact created successfully" << endl;
+		system("pause");
+		system("cls");
 		goToHome();
 	}
 
 	void editContact(string ID)
 	{
+		int choice;
+
+		do
+		{
+			system("cls");
+
+			cout << "Select what to edit" << endl;
+			cout << "1. Name" << endl;
+			cout << "2. Phone number" << endl;
+			cout << "3. Email address" << endl;
+			cout << "4. Address" << endl;
+			cout << "5. Date of Birth" << endl;
+			cout << "0. Back" << endl;
+
+			cin >> choice;
+
+			while (!isBetween(0, choice, 5))
+			{
+				cout << invalid << endl;
+				cin >> choice;
+			}
+
+			system("cls");
+
+			switch (choice)
+			{
+			case 0:
+				prev();
+				break;
+			case 1:
+			{
+				cout << "Enter new name:\n" << endl;
+				cin.ignore();
+				string newName;
+				getline(cin, newName);
+				Contact newData{ List.getContactByID(ID) };
+				newData.setDisplayName(newName);
+				List.updateContact(ID, newData);
+				prev();
+				break;
+			}
+			case 2:
+			{
+				Contact target{ List.getContactByID(ID) };
+				for (int i = 0; i < target.phoneNumbersCount(); i++)
+				{
+					cout << target.getPhoneNumByID(i).getNumber() << " (" << i + 1 << " to edit)" << endl;
+				}
+				cout << target.phoneNumbersCount() + 1 << " to add new phone number" << endl;
+				cout << "0. Back" << endl;
+
+				int choice;
+				cin >> choice;
+
+				while (!isBetween(0, choice, target.phoneNumbersCount() + 1))
+				{
+					cout << invalid << endl;
+					cin >> choice;
+				}
+
+				if (choice == 0)
+				{
+
+				}
+				else if (choice == target.phoneNumbersCount() + 1)
+				{
+					string newNumber;
+					do
+					{
+						newNumber = validNumber();
+						if (List.numberExists(newNumber))
+						{
+							cout << "Such phone number already exists, input another number" << endl;
+							continue;
+						}
+
+						break;
+					} while (true);
+					target.addPhoneNum(newNumber);
+				}
+				else
+				{
+					string newNumber;
+					do
+					{
+						newNumber = validNumber();
+						if (List.numberExists(newNumber)&&(newNumber != target.getPhoneNumByID(choice - 1).getNumber()))
+						{
+							cout << "Such phone number already exists, input another number" << endl;
+							continue;
+						}
+
+						break;
+					} while (true);
+					target.setPhoneNumByID(choice - 1, newNumber);
+				}
+
+				List.updateContact(ID, target);
+				prev();
+			}
+				break;
+			case 3:
+			{
+				Contact target{ List.getContactByID(ID) };
+				for (int i = 0; i < target.emailsCount(); i++)
+				{
+					cout << target.getEmailByID(i).getstr() << " (" << i + 1 << " to edit)" << endl;
+				}
+				cout << target.emailsCount() + 1 << " to add new email address" << endl;
+				cout << "0. Back" << endl;
+
+				int choice;
+				cin >> choice;
+
+				while (!isBetween(0, choice, target.emailsCount() + 1))
+				{
+					cout << invalid << endl;
+					cin >> choice;
+				}
+
+				if (choice == 0)
+				{
+
+				}
+				else if (choice == (target.emailsCount() + 1))
+				{
+					string newEmail;
+
+					do
+					{
+						newEmail = validEmail();
+
+						bool emailExists = false;
+						for (int i = 0; i < target.emailsCount(); i++)
+						{
+							if (newEmail == target.getEmailByID(i).getstr()) emailExists = true;
+						}
+
+						if (emailExists)
+						{
+							cout << "Such email already exists for this contact, please try again" << endl;
+							continue;
+						}
+
+						break;
+					} while (true);
+
+					target.addEmail(Email(newEmail));
+				}
+				else
+				{
+					string newEmail;
+
+					do
+					{
+						newEmail = validEmail();
+
+						bool emailExists = false;
+						for (int i = 0; i < target.emailsCount(); i++)
+						{
+							if ((newEmail == target.getEmailByID(i).getstr()) && (i != choice - 1)) emailExists = true;
+						}
+
+						if (emailExists)
+						{
+							cout << "Such email already exists for this contact, please try again" << endl;
+							continue;
+						}
+
+						break;
+					} while (true);
+				}
+
+				List.updateContact(ID, target);
+				prev();
+			}
+				break;
+			case 4:
+			{
+				Contact target{ List.getContactByID(ID) };
+				string address;
+				cout << "Input address:" << endl;
+				cin.ignore();
+				getline(cin, address);
+				target.setAddress(address);
+				List.updateContact(ID, target);
+			}
+				break;
+			case 5:
+			{
+				int d, m, y;
+				Contact target{ List.getContactByID(ID) };
+				cout << "Input year:" << endl;
+				cin >> y;
+				while (y < 0)
+				{
+					cout << "You must input non-negative value" << endl;
+					cin >> y;
+				}
+
+				cout << "Input month: " << endl;
+				cin >> m;
+				while (!isBetween(1, m, 12))
+				{
+					cout << "Value must be between 1 and 12" << endl;
+					cin >> m;
+				}
+
+				int dayLimit = 28; // every month is at least 28 days long, so let be this default
+
+				switch (m)
+				{
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+				case 8:
+				case 10:
+				case 12:
+					dayLimit = 31;
+					break;
+				case 2:
+					if (!(y % 400)) dayLimit = 29;
+					if (!(y % 4) || (y % 100)) dayLimit = 29;
+					break;
+				default:
+					dayLimit = 30;
+					break;
+				}
+
+				cout << "Input day:" << endl;
+				cin >> d;
+				while (!isBetween(1, d, dayLimit))
+				{
+					cout << "Value must be between 1 and " << dayLimit << endl;
+					cin >> d;
+				}
+
+				target.setDateofBirth(DateOfBirth(d, m, y));
+				List.updateContact(ID, target);
+			}
+				break;
+			default:
+				break;
+			}
+		} while (choice > 0);
+	}
+
+	void passwordEdit()
+	{
+		string old;
+		cin.ignore();
+		cout << "Input current password:" << endl;
+		do
+		{
+			getline(cin, old);
+
+			if (passwd != old)
+			{
+				cout << "Incorrect password" << endl;
+			}
+		} while (passwd != old);
+
+		string newpassword, confirm;
+		cout << "Input new password:" << endl;
+		getline(cin, newpassword);
+
+		cout << "Confirm new password" << endl;
+		getline(cin, confirm);
+		while (confirm != newpassword)
+		{
+			cout << "Passwords do not match" << endl;
+			getline(cin, confirm);
+		}
+
+		WriteStatus pwstat;
+		writeFile("./data/.psw", newpassword, pwstat);
+
+		if (pwstat == WriteStatus::SUCCESS)
+		{
+			passwd = newpassword;
+			cout << "Password changed successfully!" << endl;
+			system("pause");
+			system("cls");
+			goToHome();
+			return;
+		}
+
+		cout << "Something went wrong, please try again" << endl;
+		system("pause");
+		system("cls");
+		goToHome();
+		
+	}
+
+	int PasswordSet()
+	{
+		ReadStatus rstat;
+		string passwd = readFile("./shadow", rstat);
+		//fstream shadowF("shadow", ios::in);
+		//getline(shadowF, passwd);
+
+		if (rstat == ReadStatus::ERROR)
+		{
+			return 1; //make ui read this. So if passwd (password) is empty - open sign in
+		}
+		return 0; //if not empty - open log in
+	}
+
+	void loginMenu()
+	{
+		cout << "1. Login as viewer" << endl;
+		cout << "2. Login as administrator (requires password)" << endl;
+		cout << "0. Exit program" << endl;
+
+		int choice;
+		cin >> choice;
+
+		while (!isBetween(0, choice, 2))
+		{
+			cout << invalid << endl;
+			cin >> choice;
+		}
+
+		switch (choice)
+		{
+		case 0:
+			this->state = UIstate({ "exit" });
+			return;
+		case 1:
+			this->mode = "readonly";
+			goToHome();
+			break;
+		case 2:
+		{
+			string input;
+			cin.ignore();
+			cout << "Input password:" << endl;
+			do
+			{
+				getline(cin, input);
+
+				if (passwd != input)
+				{
+					cout << "Incorrect password" << endl;
+				}
+			} while (passwd != input);
+
+			mode = "admin";
+			goToHome();
+		}
+		}
+		system("cls");
+	}
+
+	void signIn()
+	{
+		string username, passwd, cpasswd;
+		cout << "Please enter a username." << endl;
+		cout << "It can contain upper and lower case letter, numbers, and underscores only: ";
+		//check this  validation Aziz
+		while (true)
+		{
+			cin >> username;
+			regex pattern("(\\w+)?");
+
+			if (regex_match(username, pattern)) {
+				cout << "Correct username!" << endl;
+				break;
+			}
+			cout << "Incorrect!Try again" << endl;
+		}
+		//setting passwd
+
+		while (true)
+		{
+			cout << "Please input password, length should be at least 6 symbols: ";
+			cin >> passwd;
+			if (passwd.length() >= 6)
+			{
+				cout << "Confirm password: ";
+				cin >> cpasswd;
+				if (passwd == cpasswd)
+				{
+					cout << "Password set succesfully!" << endl;
+					break;
+				}
+				cout << "Passwords do not match!" << endl;
+			}
+			cout << "Incorrect!Try again" << endl;
+		}
+		//fstream shadowF("shadow", ios::out | ios::trunc); //file to store password in "protected" way
+		//fstream passwdF("passwd", ios::out | ios::trunc); //file to store username
+		////files are replicating /etc/shadow and /etc/passwd in Linux 
+		//shadowF << mask(passwd, "shadow");
+		//passwdF << username;
+		//shadowF.close();
+		//passwdF.close();
+		WriteStatus wrstatus;
+		writeFile("./shadow", mask(passwd, "shadow"), wrstatus);
+		writeFile("./passwd", username, wrstatus);
+	}
+
+	int logIn()
+	{
+		ReadStatus rstat;
+		string passwd, username, cpasswd, cusername; //c for correct
+		cpasswd = mask(readFile("./shadow", rstat), "shadow");
+		cusername = readFile("./passwd", rstat);
+
+		cout << "Wellcome!" << endl;
+		for (int i = 0; i < 3; i++) //we will give 3 attemps for log in, to avoid bruteforce
+		{
+			cout << "Login:";
+			cin >> username;
+			cout << "Password: ";
+			cin >> passwd;
+			if ((mask(passwd, "shadow") == cpasswd) && (username == cusername))
+			{
+				cout << "Successful login!" << endl;
+				return 0; //on successful login
+
+			}
+			cout << "Incorrect credentials!" << endl; //I do not specify what is wrong for more safety
+		}
+		cout << "Closing app..." << endl;
+		return 1; //after 3 unseccesful logins close app
+	}
+
+	void restrictionFallbackMenu()
+	{
+		cout << "Available only in administrator mode" << endl;
+		system("pause");
+		system("cls");
+		prev();
 	}
 };
