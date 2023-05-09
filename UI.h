@@ -691,8 +691,17 @@ public:
 				dayLimit = 31;
 				break;
 			case 2:
-				if (!(y % 400)) dayLimit = 29;
-				if (!(y % 4) || (y % 100)) dayLimit = 29;
+				if (!(y % 400))
+				{
+					dayLimit = 29;
+					break;
+				}
+				if (!(y % 100))
+				{
+					dayLimit = 28;
+					break;
+				}
+				if (!(y % 4)) dayLimit = 29;
 				break;
 			default:
 				dayLimit = 30;
