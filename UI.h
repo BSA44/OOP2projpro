@@ -183,7 +183,7 @@ public:
 				loginMenu();
 			}
 
-			if (state.getLoc() == "editPassword")
+			if (state.getLoc() == "passwordEdit")
 			{
 				if (mode == "readonly")
 				{
@@ -248,7 +248,7 @@ public:
 		int pick;
 
 		do {
-
+			system("cls");
 			vector<string> searchResults;
 
 			if (!query.empty())
@@ -260,7 +260,7 @@ public:
 				searchResults = List.search(query);
 				for (int i = 0; i < searchResults.size(); i++)
 				{
-					cout << i << ". " << List.getContactByID(searchResults[i]).getDisplayName() << endl;
+					cout << i + 1 << ". " << List.getContactByID(searchResults[i]).getDisplayName() << endl;
 				}
 			}
 			else
@@ -341,6 +341,7 @@ public:
 			break;
 		case 2:
 		{
+			system("cls");
 			if (mode == "readonly")
 			{
 				cout << "Available only in administrator mode" << endl;
@@ -470,250 +471,261 @@ public:
 	{
 		int choice;
 
-		do
-		{
-			system("cls");
+		system("cls");
 
-			cout << "Select what to edit" << endl;
-			cout << "1. Name" << endl;
-			cout << "2. Phone number" << endl;
-			cout << "3. Email address" << endl;
-			cout << "4. Address" << endl;
-			cout << "5. Date of Birth" << endl;
+		cout << "Select what to edit" << endl;
+		cout << "1. Name" << endl;
+		cout << "2. Phone number" << endl;
+		cout << "3. Email address" << endl;
+		cout << "4. Address" << endl;
+		cout << "5. Date of Birth" << endl;
+		cout << "0. Back" << endl;
+
+		cin >> choice;
+
+		while (!isBetween(0, choice, 5))
+		{
+			cout << invalid << endl;
+			cin >> choice;
+		}
+
+		system("cls");
+
+		switch (choice)
+		{
+		case 0:
+			prev();
+			break;
+		case 1:
+		{
+			cout << "Enter new name:\n" << endl;
+			cin.ignore();
+			string newName;
+			getline(cin, newName);
+			Contact newData{ List.getContactByID(ID) };
+			newData.setDisplayName(newName);
+			List.updateContact(ID, newData);
+			prev();
+			break;
+		}
+		case 2:
+		{
+			Contact target{ List.getContactByID(ID) };
+			for (int i = 0; i < target.phoneNumbersCount(); i++)
+			{
+				cout << target.getPhoneNumByID(i).getNumber() << " (" << i + 1 << " to edit)" << endl;
+			}
+			cout << target.phoneNumbersCount() + 1 << " to add new phone number" << endl;
 			cout << "0. Back" << endl;
 
+			int choice;
 			cin >> choice;
 
-			while (!isBetween(0, choice, 5))
+			while (!isBetween(0, choice, target.phoneNumbersCount() + 1))
 			{
 				cout << invalid << endl;
 				cin >> choice;
 			}
 
-			system("cls");
+			if (choice == 0)
+			{
 
-			switch (choice)
-			{
-			case 0:
-				prev();
-				break;
-			case 1:
-			{
-				cout << "Enter new name:\n" << endl;
-				cin.ignore();
-				string newName;
-				getline(cin, newName);
-				Contact newData{ List.getContactByID(ID) };
-				newData.setDisplayName(newName);
-				List.updateContact(ID, newData);
-				prev();
-				break;
 			}
-			case 2:
+			else if (choice == target.phoneNumbersCount() + 1)
 			{
-				Contact target{ List.getContactByID(ID) };
-				for (int i = 0; i < target.phoneNumbersCount(); i++)
+				string newNumber;
+				do
 				{
-					cout << target.getPhoneNumByID(i).getNumber() << " (" << i + 1 << " to edit)" << endl;
-				}
-				cout << target.phoneNumbersCount() + 1 << " to add new phone number" << endl;
-				cout << "0. Back" << endl;
+					newNumber = validNumber();
+					if (List.numberExists(newNumber))
+					{
+						cout << "Such phone number already exists, input another number" << endl;
+						continue;
+					}
 
-				int choice;
+					break;
+				} while (true);
+				target.addPhoneNum(newNumber);
+			}
+			else
+			{
+				string newNumber;
+				do
+				{
+					newNumber = validNumber();
+					if (List.numberExists(newNumber) && (newNumber != target.getPhoneNumByID(choice - 1).getNumber()))
+					{
+						cout << "Such phone number already exists, input another number" << endl;
+						continue;
+					}
+
+					break;
+				} while (true);
+				target.setPhoneNumByID(choice - 1, newNumber);
+			}
+
+			List.updateContact(ID, target);
+			prev();
+		}
+		break;
+		case 3:
+		{
+			Contact target{ List.getContactByID(ID) };
+			for (int i = 0; i < target.emailsCount(); i++)
+			{
+				cout << target.getEmailByID(i).getstr() << " (" << i + 1 << " to edit)" << endl;
+			}
+			cout << target.emailsCount() + 1 << " to add new email address" << endl;
+			cout << "0. Back" << endl;
+
+			int choice;
+			cin >> choice;
+
+			while (!isBetween(0, choice, target.emailsCount() + 1))
+			{
+				cout << invalid << endl;
 				cin >> choice;
-
-				while (!isBetween(0, choice, target.phoneNumbersCount() + 1))
-				{
-					cout << invalid << endl;
-					cin >> choice;
-				}
-
-				if (choice == 0)
-				{
-
-				}
-				else if (choice == target.phoneNumbersCount() + 1)
-				{
-					string newNumber;
-					do
-					{
-						newNumber = validNumber();
-						if (List.numberExists(newNumber))
-						{
-							cout << "Such phone number already exists, input another number" << endl;
-							continue;
-						}
-
-						break;
-					} while (true);
-					target.addPhoneNum(newNumber);
-				}
-				else
-				{
-					string newNumber;
-					do
-					{
-						newNumber = validNumber();
-						if (List.numberExists(newNumber)&&(newNumber != target.getPhoneNumByID(choice - 1).getNumber()))
-						{
-							cout << "Such phone number already exists, input another number" << endl;
-							continue;
-						}
-
-						break;
-					} while (true);
-					target.setPhoneNumByID(choice - 1, newNumber);
-				}
-
-				List.updateContact(ID, target);
-				prev();
 			}
-				break;
-			case 3:
+
+			if (choice == 0)
 			{
-				Contact target{ List.getContactByID(ID) };
-				for (int i = 0; i < target.emailsCount(); i++)
-				{
-					cout << target.getEmailByID(i).getstr() << " (" << i + 1 << " to edit)" << endl;
-				}
-				cout << target.emailsCount() + 1 << " to add new email address" << endl;
-				cout << "0. Back" << endl;
 
-				int choice;
-				cin >> choice;
-
-				while (!isBetween(0, choice, target.emailsCount() + 1))
-				{
-					cout << invalid << endl;
-					cin >> choice;
-				}
-
-				if (choice == 0)
-				{
-
-				}
-				else if (choice == (target.emailsCount() + 1))
-				{
-					string newEmail;
-
-					do
-					{
-						newEmail = validEmail();
-
-						bool emailExists = false;
-						for (int i = 0; i < target.emailsCount(); i++)
-						{
-							if (newEmail == target.getEmailByID(i).getstr()) emailExists = true;
-						}
-
-						if (emailExists)
-						{
-							cout << "Such email already exists for this contact, please try again" << endl;
-							continue;
-						}
-
-						break;
-					} while (true);
-
-					target.addEmail(Email(newEmail));
-				}
-				else
-				{
-					string newEmail;
-
-					do
-					{
-						newEmail = validEmail();
-
-						bool emailExists = false;
-						for (int i = 0; i < target.emailsCount(); i++)
-						{
-							if ((newEmail == target.getEmailByID(i).getstr()) && (i != choice - 1)) emailExists = true;
-						}
-
-						if (emailExists)
-						{
-							cout << "Such email already exists for this contact, please try again" << endl;
-							continue;
-						}
-
-						break;
-					} while (true);
-				}
-
-				List.updateContact(ID, target);
-				prev();
 			}
-				break;
-			case 4:
+			else if (choice == (target.emailsCount() + 1))
 			{
-				Contact target{ List.getContactByID(ID) };
-				string address;
-				cout << "Input address:" << endl;
-				cin.ignore();
-				getline(cin, address);
-				target.setAddress(address);
-				List.updateContact(ID, target);
+				string newEmail;
+
+				do
+				{
+					newEmail = validEmail();
+
+					bool emailExists = false;
+					for (int i = 0; i < target.emailsCount(); i++)
+					{
+						if (newEmail == target.getEmailByID(i).getstr()) emailExists = true;
+					}
+
+					if (emailExists)
+					{
+						cout << "Such email already exists for this contact, please try again" << endl;
+						continue;
+					}
+
+					break;
+				} while (true);
+
+				target.addEmail(Email(newEmail));
 			}
-				break;
-			case 5:
+			else
 			{
-				int d, m, y;
-				Contact target{ List.getContactByID(ID) };
-				cout << "Input year:" << endl;
+				string newEmail;
+
+				do
+				{
+					newEmail = validEmail();
+
+					bool emailExists = false;
+					for (int i = 0; i < target.emailsCount(); i++)
+					{
+						if ((newEmail == target.getEmailByID(i).getstr()) && (i != choice - 1)) emailExists = true;
+					}
+
+					if (emailExists)
+					{
+						cout << "Such email already exists for this contact, please try again" << endl;
+						continue;
+					}
+
+					break;
+				} while (true);
+
+				target.setEmailByID(choice - 1, newEmail);
+			}
+
+			List.updateContact(ID, target);
+			prev();
+		}
+		break;
+		case 4:
+		{
+			Contact target{ List.getContactByID(ID) };
+			string address;
+			cout << "Input address:" << endl;
+			cin.ignore();
+			getline(cin, address);
+			target.setAddress(address);
+			List.updateContact(ID, target);
+			prev();
+		}
+		break;
+		case 5:
+		{
+			int d, m, y;
+			Contact target{ List.getContactByID(ID) };
+			cout << "Input year:" << endl;
+			cin >> y;
+			while (y < 0)
+			{
+				cout << "You must input non-negative value" << endl;
 				cin >> y;
-				while (y < 0)
-				{
-					cout << "You must input non-negative value" << endl;
-					cin >> y;
-				}
-
-				cout << "Input month: " << endl;
-				cin >> m;
-				while (!isBetween(1, m, 12))
-				{
-					cout << "Value must be between 1 and 12" << endl;
-					cin >> m;
-				}
-
-				int dayLimit = 28; // every month is at least 28 days long, so let be this default
-
-				switch (m)
-				{
-				case 1:
-				case 3:
-				case 5:
-				case 7:
-				case 8:
-				case 10:
-				case 12:
-					dayLimit = 31;
-					break;
-				case 2:
-					if (!(y % 400)) dayLimit = 29;
-					if (!(y % 4) || (y % 100)) dayLimit = 29;
-					break;
-				default:
-					dayLimit = 30;
-					break;
-				}
-
-				cout << "Input day:" << endl;
-				cin >> d;
-				while (!isBetween(1, d, dayLimit))
-				{
-					cout << "Value must be between 1 and " << dayLimit << endl;
-					cin >> d;
-				}
-
-				target.setDateofBirth(DateOfBirth(d, m, y));
-				List.updateContact(ID, target);
 			}
+
+			cout << "Input month: " << endl;
+			cin >> m;
+			while (!isBetween(1, m, 12))
+			{
+				cout << "Value must be between 1 and 12" << endl;
+				cin >> m;
+			}
+
+			int dayLimit = 28; // every month is at least 28 days long, so let be this default
+
+			switch (m)
+			{
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				dayLimit = 31;
+				break;
+			case 2:
+				if (!(y % 400))
+				{
+					dayLimit = 29;
+					break;
+				}
+				if (!(y % 100))
+				{
+					dayLimit = 28;
+					break;
+				}
+				if (!(y % 4)) dayLimit = 29;
 				break;
 			default:
+				dayLimit = 30;
 				break;
 			}
-		} while (choice > 0);
+
+			cout << "Input day:" << endl;
+			cin >> d;
+			while (!isBetween(1, d, dayLimit))
+			{
+				cout << "Value must be between 1 and " << dayLimit << endl;
+				cin >> d;
+			}
+
+			target.setDateofBirth(DateOfBirth(d, m, y));
+			List.updateContact(ID, target);
+			prev();
+		}
+		break;
+		default:
+			break;
+		}
+		system("cls");
 	}
 
 	void passwordEdit()

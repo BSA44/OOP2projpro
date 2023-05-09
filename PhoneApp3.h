@@ -30,11 +30,14 @@ public:
         if (d == 29) {
             if (month == 2)
             {
-                if (!(year % 4) && (year % 100 || !(year % 400)))
+                if (!(year % 400))
                 {
                     day = d;
-                    return;
                 }
+                else if (!(year % 100))
+                {
+                }
+                else if (!(year % 4)) day = d;
             }
             else
             {
@@ -84,9 +87,9 @@ public:
         month = 1;
         year = 1970; // 1 Jan 1970 is a common starting time value
 
-        setDay(d);
-        setMonth(m);
         setYear(y);
+        setMonth(m);
+        setDay(d);
         // in case of invalid value, default value will remain
     }
 
