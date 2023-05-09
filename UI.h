@@ -247,7 +247,7 @@ public:
 		int pick;
 
 		do {
-
+			system("cls");
 			vector<string> searchResults;
 
 			if (!query.empty())
@@ -259,7 +259,7 @@ public:
 				searchResults = List.search(query);
 				for (int i = 0; i < searchResults.size(); i++)
 				{
-					cout << i << ". " << List.getContactByID(searchResults[i]).getDisplayName() << endl;
+					cout << i + 1 << ". " << List.getContactByID(searchResults[i]).getDisplayName() << endl;
 				}
 			}
 			else
