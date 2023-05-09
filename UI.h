@@ -340,6 +340,7 @@ public:
 			break;
 		case 2:
 		{
+			system("cls");
 			if (mode == "readonly")
 			{
 				cout << "Available only in administrator mode" << endl;
