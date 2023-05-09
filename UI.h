@@ -366,7 +366,7 @@ public:
 
 			if (nameExists)
 			{
-				cout << "Contact with such name already exists, do you wish to edit this contact?\n(1 - yes, 0 - no)" << endl;
+				cout << "Contact with such name already exists, do you wish to edit this contact?\n(1 - yes, 0 - no) " << endl;
 				int choice;
 				cin >> choice;
 
