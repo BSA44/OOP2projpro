@@ -14,15 +14,7 @@ using namespace csv;
 using namespace files;
 
 ReadStatus rstat;
-string toLower(string str)
-{
-	for (int i = 0; i < str.length(); i++) {
-		if (str[i] >= 'A' && str[i] <= 'Z') {        // If the character is Uppercase
-			str[i] = ((char)(str[i] - 'A' + 'a'));   // Conversion from uppercase to lowercase, update character value
-		}
-	}
-	return str;
-}
+
 //vector<int> string_to_vector(const string& str, char delimiter) { 
 //	vector<int> result;
 //	stringstream ss(str);

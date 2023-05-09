@@ -111,3 +111,13 @@ string validNumber(bool noIgnore)
 		cout << "Only numbers allowed! Try again!" << endl;
 	} while (true);
 }
+
+string toLower(string str)
+{
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] >= 'A' && str[i] <= 'Z') {        // If the character is Uppercase
+			str[i] = ((char)(str[i] - 'A' + 'a'));   // Conversion from uppercase to lowercase, update character value
+		}
+	}
+	return str;
+}
