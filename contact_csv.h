@@ -19,6 +19,7 @@ csv::csv_t toCSV(Contact contact) //converting contact to csv
 	result[2][0] = contact.getAddress();
 
 
+
 	for (int i = 0; i < contact.phoneNumbersCount(); i++)
 	{
 		result[3].push_back(contact.getPhoneNumByID(i).getNumber());
